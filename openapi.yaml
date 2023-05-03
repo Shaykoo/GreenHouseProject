@@ -1,0 +1,110 @@
+openapi: 3.0.3
+info:
+  title: Green House Emissions API
+  description: API for managing green house emissions data
+  version: 1.0.0
+servers:
+  - url: http: //localhost:3000
+paths:
+  /ghg-emissions:
+    post:
+      summary: Add emissions data
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                country:
+                  type: string
+                  description: Name of the country for which the data has been recorded for
+                  example: "USA"
+                year:
+                  type: string
+                  description: Year for which the data has been recorded for
+                  example: "2022"
+                value:
+                  type: number
+                  description: Number representing the recorded value
+                  example: 10.5
+                parameter:
+                  type: string
+                  enum: [CO2, NO2, SO2
+]
+                  description: The parameter for which the value has been recorded
+                  example: "CO2"
+      responses:
+        '200':
+          description: Successfully added emissions data
+        '400':
+          description: Invalid request body
+    get:
+      summary: Retrieve emissions data
+      parameters:
+        - in: query
+          name: start_year
+          required: true
+          description: Signifies the time range for which the data is required
+          schema:
+            type: string
+            example: "2015"
+        - in: query
+          name: end_year
+          required: true
+          description: Signifies the time range for which the data is required
+          schema:
+            type: string
+            example: "2020"
+        - in: query
+          name: parameter
+          required: false
+          description: Only return the data for the given parameter (Values can only be CO2, NO2, SO2)
+          schema:
+            type: string
+            enum: [CO2, NO2, SO2
+]
+            example: "CO2"
+        - in: query
+          name: country_name
+          required: false
+          description: Only return the data for the given country name. Throw an error if no country name is found
+          schema:
+            type: string
+            example: "USA"
+      responses:
+        '200':
+          description: Successfully retrieved emissions data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                      description: The ID of the emissions data record
+                      example: "614b5c32fa2bf2a0edf80b1e"
+                    country:
+                      type: string
+                      description: Name of the country for which the data has been recorded for
+                      example: "USA"
+                    year:
+                      type: string
+                      description: Year for which the data has been recorded for
+                      example: "2020"
+                    value:
+                      type: number
+                      description: Number representing the recorded value
+                      example: 10.5
+                    parameter:
+                      type: string
+                      enum: [CO2, NO2, SO2
+]
+                      description: The parameter for which the value has been recorded
+                      example: "CO2"
+        '400':
+          description: Invalid request parameters
+        '404':
+          description: No data found for the specified parameters
